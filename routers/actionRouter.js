@@ -31,7 +31,7 @@ router.put('/', (req, res) => {
 
 
 // DELETE
-router.delte('/', (req, res) => {
+router.delete('/', (req, res) => {
 
 })
 
