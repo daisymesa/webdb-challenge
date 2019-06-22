@@ -5,19 +5,21 @@ const knex = require('knex');
 const knexConfig = require('../knexfile.js');
 const db = knex(knexConfig.development);
 
-
-// router.get('/', (req, res) => {
-//     res.send(`
-//     <h2>Actions is working!</h2>
-//     `)
-// })
-
-// CREATE
+// CREATE - add an action
 router.post('/', (req, res) => {
+    const newAction = { project_id: req.body.project_id, description: req.body.description, notes: req.body.notes };
 
+    db('actions')
+        .insert(newAction)
+        .then(addedAction => {
+            res.status(201).json(addedAction);
+        })
+        .catch(error => {
+            res.status(500).json({ error: 'The data could not be added.' })
+        })
 })
 
-// READ
+// READ - get actions
 router.get('/', (req, res) => {
     db('actions')
         .then(actions => {
@@ -26,17 +28,6 @@ router.get('/', (req, res) => {
         .catch(error => {
             res.status(500).json(error);
         })
-})
-
-// UPDATE
-router.put('/', (req, res) => {
-
-})
-
-
-// DELETE
-router.delete('/', (req, res) => {
-
 })
 
 module.exports = router;

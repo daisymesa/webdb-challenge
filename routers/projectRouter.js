@@ -34,15 +34,39 @@ router.get('/', (req, res) => {
 // READ - get a project by id
 router.get('/:id', (req, res) => {
     db('projects')
-      .where({ id: req.params.id })
-      .first()
-      .then(projects => {
-        res.status(200).json(projects);
-    })
-    .catch(error => {
-        res.status(500).json(error);
-    })
-  });
+        .where({ id: req.params.id })
+        .first()
+        .then(projects => {
+            res.status(200).json(projects);
+        })
+        .catch(error => {
+            res.status(500).json(error);
+        })
+});
+
+//READ - get a project by its id that returns the project and its actions
+router.get('/:id/actions', (req, res) => {
+    db('projects')
+        .where({ id: req.params.id })
+        .then(project => {
+            db('actions')
+                .where({ project_id: req.params.id })
+                .then(actions => {
+                    if (actions) {
+                        res.status(200).json(actions);
+                    } else {
+                        res.status(404).json({ message: 'Project actions not found' });
+                    }
+                })
+                .catch(error => {
+                    res.status(500).json({ message: 'Actions data could not be retrieved.' })
+                })
+        })
+        .catch(error => {
+            console.error(error)
+            res.status(500).json(error)
+        })
+})
 
 // DELETE
 router.delete('/:id', (req, res) => {
@@ -61,5 +85,5 @@ router.delete('/:id', (req, res) => {
         });
 });
 
-module.exports = router;
 
+module.exports = router;
